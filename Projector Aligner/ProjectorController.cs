@@ -77,6 +77,8 @@ namespace IngameScript
             public void UpdateKeys()
             {
                 int keys = GetKeysPressed();
+                if (keys == 0)
+                    return;
                 var projector = projectorGroup.CurrentProjector;
                 if ((keys & Key_Up) == Key_Up)
                 {
@@ -138,6 +140,7 @@ namespace IngameScript
                     projector.ProjectionOffset = new Vector3I(projector.ProjectionOffset.X, projector.ProjectionOffset.Y, projector.ProjectionOffset.Z + 1);
                     projector.UpdateOffsetAndRotation();
                 }
+                projectorGroup.UpdateDisplays();
             }
         }
     }

@@ -30,38 +30,48 @@ namespace IngameScript
         {
             IMyProjector projector = null;
             IMyShipController controller = null;
+            IMyTextSurfaceProvider provider = null;
             string groupName;
-            string projectorName;
             GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(Blocks, block => {
-                projector = block as IMyProjector;                
+                projector = block as IMyProjector;
                 if (null != projector)
                 {
-                    //Echo($"Found projector: {projector.CustomName}");
                     if (MyIni.HasSection(projector.CustomData, iniSection) && ini.TryParse(projector.CustomData))
                     {
                         groupName = ini.Get(iniSection, "group").ToString("default");
-                        projectorName = ini.Get(iniSection, "name").ToString("default");
                         if (!ProjectorGroups.Keys.Contains(groupName))
                         {
                             ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
-                            //Echo($"New P group: {groupName}");
                         }
                         ProjectorGroups[groupName].Add(projector);
-                        //Echo($"New projector: {projector.CustomName}");
+                    }
+                }
+                provider = block as IMyTextSurfaceProvider;
+                if (null != provider)
+                {
+                    if (MyIni.HasSection(block.CustomData, iniSection) && ini.TryParse(block.CustomData))
+                    {
+                        groupName = ini.Get(iniSection, "group").ToString("default");
+                        if (!ProjectorGroups.Keys.Contains(groupName))
+                        {
+                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
+                        }
+                        int surfacenumber = ini.Get(iniSection, "display").ToInt16(-1);
+                        if (surfacenumber >= 0 && provider.SurfaceCount > 0)
+                        {
+                            ProjectorGroups[groupName].Add(provider.GetSurface(surfacenumber));
+                        }
                     }
                 }
                 controller = block as IMyShipController;
                 if (null != controller)
                 {
-                    //Echo($"Found controller: {controller.CustomName}");
                     if (MyIni.HasSection(controller.CustomData, iniSection) && ini.TryParse(controller.CustomData))
                     {
                         groupName = ini.Get(iniSection, "group").ToString("default");
-                        projectorName = ini.Get(iniSection, "projector").ToString("default");
                         if (!ProjectorControllers.Keys.Contains(groupName))
                         {
                             ProjectorControllers.Add(groupName, new ProjectorController(controller, this));
-                            //Echo($"New Controller: {groupName}:{controller.CustomName}");
                         }
                     }
                 }
@@ -71,12 +81,10 @@ namespace IngameScript
             {
                 if (ProjectorGroups.ContainsKey(name))
                 {
-                    Echo($"Found projector(s) for {name}");
                     ProjectorControllers[name].projectorGroup = ProjectorGroups[name];
                 }
                 else
                 {
-                    Echo($"Did not find projector(s) for {name}");
                     ProjectorGroups.Remove(name);
                 }
             }

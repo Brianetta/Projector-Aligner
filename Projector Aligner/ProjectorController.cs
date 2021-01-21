@@ -80,33 +80,33 @@ namespace IngameScript
                 if (keys == 0)
                     return;
                 var projector = projectorGroup.CurrentProjector;
-                if ((keys & Key_Up) == Key_Up)
+                if ((keys & Key_Right) == Key_Right)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X >= 3 ? 0 : projector.ProjectionRotation.X + 1, projector.ProjectionRotation.Y, projector.ProjectionRotation.Z);
                     projector.UpdateOffsetAndRotation();
                 }
-                if ((keys & Key_Down) == Key_Down)
+                if ((keys & Key_Left) == Key_Left)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X == 0 ? 3 : projector.ProjectionRotation.X - 1, projector.ProjectionRotation.Y, projector.ProjectionRotation.Z);
                     projector.UpdateOffsetAndRotation();
                 }
-                if ((keys & Key_Left) == Key_Left)
+                if ((keys & Key_Up) == Key_Up)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X, projector.ProjectionRotation.Y >= 3 ? 0 : projector.ProjectionRotation.Y + 1, projector.ProjectionRotation.Z);
                     projector.UpdateOffsetAndRotation();
                 }
-                if ((keys & Key_Right) == Key_Right)
+                if ((keys & Key_Down) == Key_Down)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X, projector.ProjectionRotation.Y == 0 ? 3 : projector.ProjectionRotation.Y - 1, projector.ProjectionRotation.Z);
                     projector.UpdateOffsetAndRotation();
                 }
-                if ((keys & Key_Q) == Key_Q)
+                if ((keys & Key_E) == Key_E)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X, projector.ProjectionRotation.Y, projector.ProjectionRotation.Z >= 3 ? 0 : projector.ProjectionRotation.Z + 1);
                     projector.UpdateOffsetAndRotation();
                 }
-                if ((keys & Key_E) == Key_E)
-                {
+                if ((keys & Key_Q) == Key_Q)
+                    {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X, projector.ProjectionRotation.Y, projector.ProjectionRotation.Z == 0 ? 3 : projector.ProjectionRotation.Z - 1);
                     projector.UpdateOffsetAndRotation();
                 }
@@ -122,12 +122,12 @@ namespace IngameScript
                 }
                 if ((keys & Key_Space) == Key_Space)
                 {
-                    projector.ProjectionOffset = new Vector3I(projector.ProjectionOffset.X, projector.ProjectionOffset.Y + 1, projector.ProjectionOffset.Z);
+                    projector.ProjectionOffset = new Vector3I(projector.ProjectionOffset.X, projector.ProjectionOffset.Y - 1, projector.ProjectionOffset.Z);
                     projector.UpdateOffsetAndRotation();
                 }
                 if ((keys & Key_C) == Key_C)
                 {
-                    projector.ProjectionOffset = new Vector3I(projector.ProjectionOffset.X, projector.ProjectionOffset.Y - 1, projector.ProjectionOffset.Z);
+                    projector.ProjectionOffset = new Vector3I(projector.ProjectionOffset.X, projector.ProjectionOffset.Y + 1, projector.ProjectionOffset.Z);
                     projector.UpdateOffsetAndRotation();
                 }
                 if ((keys & Key_S) == Key_S)

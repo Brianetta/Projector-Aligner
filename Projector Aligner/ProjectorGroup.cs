@@ -9,7 +9,7 @@ namespace IngameScript
         class ProjectorGroup
         {
             private List<IMyProjector> projectors = new List<IMyProjector>();
-            private List<IMyTextSurface> displays = new List<IMyTextSurface>();
+            private List<ManagedDisplay> displays = new List<ManagedDisplay>();
             public string CustomName
             {
                 get;
@@ -62,7 +62,7 @@ namespace IngameScript
                     projectors.Add(projector);
                 }
             }
-            public void Add(IMyTextSurface surface)
+            public void Add(ManagedDisplay surface)
             {
                 if (!displays.Contains(surface))
                 {
@@ -76,13 +76,9 @@ namespace IngameScript
             }
             public void UpdateDisplays()
             {
-                foreach (var surface in displays)
+                foreach (var display in displays)
                 {
-                    surface.WriteText($"{this.CustomName}:{_currentProjector.CustomName}\n");
-                    surface.WriteText($"Horizontal Offset: {_currentProjector.ProjectionOffset.X}  Pitch: {_currentProjector.ProjectionRotation.Y}\n",true);
-                    surface.WriteText($"Vertical Offset: {_currentProjector.ProjectionOffset.Y}  Yaw: {_currentProjector.ProjectionRotation.X}\n",true);
-                    surface.WriteText($"Forward Offset: {_currentProjector.ProjectionOffset.Z}  Roll: {_currentProjector.ProjectionRotation.Z}\n",true);
-                    surface.WriteText($"Blocks remaining: {_currentProjector.RemainingBlocks} (total {_currentProjector.TotalBlocks})",true);
+                    display.RenderProjectorStatus(_currentProjector,CustomName);
                 }
             }
         }

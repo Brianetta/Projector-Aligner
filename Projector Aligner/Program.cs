@@ -10,11 +10,11 @@ using VRage;
 using VRage.Collections;
 using VRage.Game;
 using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
+using System;
 
 namespace IngameScript
 {
@@ -25,6 +25,16 @@ namespace IngameScript
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
         MyIni ini = new MyIni();
         string iniSection = "projector";
+
+        struct MenuItem
+        {
+            public string Sprite;
+            public float SpriteRotation;
+            public Color SpriteColor;
+            public Color TextColor;
+            public string MenuText;
+            public Action Action;
+        }
 
         public void Build()
         {
@@ -57,9 +67,10 @@ namespace IngameScript
                             ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
                         }
                         int surfacenumber = ini.Get(iniSection, "display").ToInt16(-1);
+                        float scale = ini.Get(iniSection, "scale").ToSingle(1.0f);
                         if (surfacenumber >= 0 && provider.SurfaceCount > 0)
                         {
-                            ProjectorGroups[groupName].Add(provider.GetSurface(surfacenumber));
+                            ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber),scale));
                         }
                     }
                 }

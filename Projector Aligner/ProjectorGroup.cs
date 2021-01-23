@@ -82,6 +82,7 @@ namespace IngameScript
                     surface.WriteText($"Horizontal Offset: {_currentProjector.ProjectionOffset.X}  Pitch: {_currentProjector.ProjectionRotation.Y}\n",true);
                     surface.WriteText($"Vertical Offset: {_currentProjector.ProjectionOffset.Y}  Yaw: {_currentProjector.ProjectionRotation.X}\n",true);
                     surface.WriteText($"Forward Offset: {_currentProjector.ProjectionOffset.Z}  Roll: {_currentProjector.ProjectionRotation.Z}\n",true);
+                    surface.WriteText($"Blocks remaining: {_currentProjector.RemainingBlocks} (total {_currentProjector.TotalBlocks})",true);
                 }
             }
         }

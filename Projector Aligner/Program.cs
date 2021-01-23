@@ -100,6 +100,11 @@ namespace IngameScript
         {
             foreach (var projectorController in ProjectorControllers.Values)
                 projectorController.UpdateKeys();
+            if ((Runtime.UpdateFrequency & UpdateFrequency.Update100) != 0)
+            {
+                foreach (var projectorGroup in ProjectorGroups.Values)
+                    projectorGroup.UpdateDisplays();
+            }
         }
     }
 }

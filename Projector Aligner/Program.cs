@@ -20,11 +20,13 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        string Version = "Version 1.0.0";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
         Dictionary<string, ProjectorController> ProjectorControllers = new Dictionary<string, ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
         MyIni ini = new MyIni();
         string iniSection = "projector";
+        MyCommandLine commandLine = new MyCommandLine();
 
         struct MenuItem
         {
@@ -42,6 +44,8 @@ namespace IngameScript
             IMyShipController controller = null;
             IMyTextSurfaceProvider provider = null;
             string groupName;
+            ProjectorControllers.Clear();
+            ProjectorGroups.Clear();
             GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(Blocks, block => {
                 projector = block as IMyProjector;
                 if (null != projector)
@@ -103,6 +107,7 @@ namespace IngameScript
 
         public Program()
         {
+            Echo(Version);
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
             Build();
         }
@@ -111,7 +116,38 @@ namespace IngameScript
         {
             foreach (var projectorController in ProjectorControllers.Values)
                 projectorController.UpdateKeys();
-            if ((Runtime.UpdateFrequency & UpdateFrequency.Update100) != 0)
+            if (commandLine.TryParse(argument))
+            {
+                string groupName = (commandLine.Argument(1) == null) ? "default" : commandLine.Argument(1);
+                switch (commandLine.Argument(0))
+                {
+                    case "up":                        
+                        if (ProjectorGroups.Keys.Contains(groupName) && !ProjectorGroups[groupName].DisplayStatus)
+                            ProjectorGroups[groupName].Up();
+                        break;
+                    case "down":
+                        if (ProjectorGroups.Keys.Contains(groupName) && !ProjectorGroups[groupName].DisplayStatus)
+                            ProjectorGroups[groupName].Down();
+                        break;
+                    case "apply":
+                    case "select":
+                        if (ProjectorGroups.Keys.Contains(groupName))
+                        {
+                            ProjectorGroup group = ProjectorGroups[groupName];
+                            if (!group.DisplayStatus)
+                                group.Select();
+                            group.DisplayStatus = !group.DisplayStatus;
+                        }
+                        break;
+                    case "build":
+                    case "rebuild":
+                        Build();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if ((updateSource & UpdateType.Update100) != 0)
             {
                 foreach (var projectorGroup in ProjectorGroups.Values)
                     projectorGroup.UpdateDisplays();

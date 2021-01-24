@@ -69,6 +69,7 @@ namespace IngameScript
                     }
                 }
             }
+
             public void Add(IMyProjector projector)
             {
                 if (projectors.Count == 0)

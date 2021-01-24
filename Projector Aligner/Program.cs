@@ -74,7 +74,17 @@ namespace IngameScript
                         float scale = ini.Get(iniSection, "scale").ToSingle(1.0f);
                         if (surfacenumber >= 0 && provider.SurfaceCount > 0)
                         {
-                            ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber),scale));
+                            string DefaultColor = "00CED1";
+                            string ColorStr = ini.Get(iniSection, "color").ToString(DefaultColor);
+                            if (ColorStr.Length < 6) 
+                                ColorStr = DefaultColor;
+                            string R = ColorStr.Substring(0, 2);
+                            string G = ColorStr.Substring(2, 2);
+                            string B = ColorStr.Substring(4, 2);
+                            Color color = new Color() { R = byte.Parse(R, System.Globalization.NumberStyles.HexNumber), G = byte.Parse(G, System.Globalization.NumberStyles.HexNumber), B = byte.Parse(B, System.Globalization.NumberStyles.HexNumber), A = 255 };
+                            Echo(color.ToString());
+                            ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber),scale, color));
+                            
                         }
                     }
                 }
@@ -118,7 +128,7 @@ namespace IngameScript
                 projectorController.UpdateKeys();
             if (commandLine.TryParse(argument))
             {
-                string groupName = (commandLine.Argument(1) == null) ? "default" : commandLine.Argument(1);
+                string groupName = commandLine.Argument(1) ?? "default";
                 switch (commandLine.Argument(0))
                 {
                     case "up":                        

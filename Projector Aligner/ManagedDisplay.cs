@@ -25,11 +25,13 @@ namespace IngameScript
             private int WindowPosition = 0; // Number of lines scrolled away
             private int CursorMenuPosition; // Position of cursor within window
             private float Scale;
+            private Color HighlightColor;
 
-            public ManagedDisplay(IMyTextSurface surface, float scale = 1.0f)
+            public ManagedDisplay(IMyTextSurface surface, float scale = 1.0f, Color highlightColor = new Color())
             {
                 this.surface = surface;
                 this.Scale = scale;
+                this.HighlightColor = highlightColor;
 
                 // Scale everything!
                 StartHeight *= scale;
@@ -53,7 +55,7 @@ namespace IngameScript
                     Type = SpriteType.TEXTURE,
                     Data = "SquareSimple",
                     Position = CursorDrawPosition,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Size = new Vector2(viewport.Width, LineHeight)
                 });
             }
@@ -76,7 +78,7 @@ namespace IngameScript
                 {
                     Type = SpriteType.TEXTURE,
                     Data = "AH_BoreSight",
-                    Color = (WindowPosition > 0) ? Color.DarkTurquoise : Color.Black.Alpha(0),
+                    Color = (WindowPosition > 0) ? HighlightColor : Color.Black.Alpha(0),
                     RotationOrScale = 1.5f * (float)Math.PI,
                     Size = new Vector2(LineHeight, LineHeight),
                     Position = Position,
@@ -86,7 +88,7 @@ namespace IngameScript
                 {
                     Type = SpriteType.TEXTURE,
                     Data = "AH_BoreSight",
-                    Color = (WindowPosition + WindowSize < menuLength) ? Color.DarkTurquoise : Color.Black.Alpha(0),
+                    Color = (WindowPosition + WindowSize < menuLength) ? HighlightColor : Color.Black.Alpha(0),
                     RotationOrScale = 0.5f * (float)Math.PI,
                     Size = new Vector2(LineHeight, LineHeight),
                     Position = Position,
@@ -98,7 +100,7 @@ namespace IngameScript
                     Data = "----------------------------",
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.CENTER,
                     FontId = "White"
                 });
@@ -117,6 +119,8 @@ namespace IngameScript
 
             private void AddMenuItem(string menuText, string sprite = "SquareSimple", float spriteRotation = 0, Color? spriteColor = null, Color? textColor = null)
             {
+                if (null == spriteColor)
+                    spriteColor = Color.White;
                 float SpriteOffset = 25f * Scale;
                 Position += new Vector2(0, LineHeight);
                 frame.Add(new MySprite()
@@ -222,7 +226,7 @@ namespace IngameScript
                     Data = projector.ProjectionOffset.X.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });
@@ -244,7 +248,7 @@ namespace IngameScript
                     Data = projector.ProjectionRotation.Y.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });               
@@ -268,7 +272,7 @@ namespace IngameScript
                     Data = projector.ProjectionOffset.Y.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });
@@ -290,7 +294,7 @@ namespace IngameScript
                     Data = projector.ProjectionRotation.X.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });
@@ -314,7 +318,7 @@ namespace IngameScript
                     Data = projector.ProjectionOffset.Z.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });
@@ -336,7 +340,7 @@ namespace IngameScript
                     Data = projector.ProjectionRotation.Z.ToString(),
                     Position = Position,
                     RotationOrScale = RegularFontSize,
-                    Color = Color.DarkTurquoise,
+                    Color = HighlightColor,
                     Alignment = TextAlignment.LEFT,
                     FontId = "White"
                 });

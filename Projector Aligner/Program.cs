@@ -82,7 +82,6 @@ namespace IngameScript
                             string G = ColorStr.Substring(2, 2);
                             string B = ColorStr.Substring(4, 2);
                             Color color = new Color() { R = byte.Parse(R, System.Globalization.NumberStyles.HexNumber), G = byte.Parse(G, System.Globalization.NumberStyles.HexNumber), B = byte.Parse(B, System.Globalization.NumberStyles.HexNumber), A = 255 };
-                            Echo(color.ToString());
                             ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber),scale, color));
                             
                         }

@@ -23,8 +23,7 @@ color=00CED1
 
 Change the number to the screen that you wish to use; numbers start at 0, so a
 five-screen cockpit has screens 0, 1, 2, 3 and 4.
-Color is the same across all displays in a group, and should be entered the same
-on all of them. If any are different, an arbitrary one will "win" and be used.
+Color should be entered as six hexadecimal digits representing red, green and blue.
 
 Arguments
 ---------

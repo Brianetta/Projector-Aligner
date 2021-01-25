@@ -34,3 +34,6 @@ apply          Enter Menu / Select current projector from Menu
 select           "
 build          Re-read the Custom Data of blocks, and reconfigure
 rebuild          "
+
+Follow the argument with a group name if other than "default". Use quotes if the
+group name contains spaces or begins with a hyphen.

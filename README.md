@@ -39,3 +39,6 @@ Arguments
 - `select`           "
 - `build`          Re-read the Custom Data of blocks, and reconfigure
 - `rebuild`          "
+
+If you wish to control a group other than "default", append its name to the
+argument, using quotes if the group name has spaces in it.

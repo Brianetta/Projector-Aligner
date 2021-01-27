@@ -72,7 +72,7 @@ namespace IngameScript
 
             public void Add(IMyProjector projector)
             {
-                if (projectors.Count == 0)
+                if (projector.Enabled)
                 {
                     this.currentProjector = projector;
                 }
@@ -82,6 +82,7 @@ namespace IngameScript
                 }
                 ProjectorMenu.Add(new MenuItem() {
                     Sprite = "Construction",
+                    SpriteColor = Color.Yellow,
                     TextColor = Color.White,
                     MenuText = projector.CustomName,
                     Action = () => { currentProjector = projector; currentProjectorIndex = projectors.Count - 1; }

@@ -71,7 +71,7 @@ namespace IngameScript
 
             public void Add(IMyProjector projector)
             {
-                if (projector.Enabled)
+                if (projectors.Count == 0 || projector.Enabled)
                 {
                     this.currentProjector = projector;
                     this.SelectedLine = projectors.Count;

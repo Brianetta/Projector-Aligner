@@ -13,7 +13,6 @@ namespace IngameScript
             private List<ManagedDisplay> displays = new List<ManagedDisplay>();
             private List<MenuItem> ProjectorMenu = new List<MenuItem>();
             private int SelectedLine = 0;
-            private int currentProjectorIndex = 0;
             public bool DisplayStatus
             {
                 get
@@ -75,6 +74,7 @@ namespace IngameScript
                 if (projector.Enabled)
                 {
                     this.currentProjector = projector;
+                    this.SelectedLine = projectors.Count;
                 }
                 if (!projectors.Contains(projector))
                 {
@@ -85,7 +85,7 @@ namespace IngameScript
                     SpriteColor = Color.Yellow,
                     TextColor = Color.White,
                     MenuText = projector.CustomName,
-                    Action = () => { currentProjector = projector; currentProjectorIndex = projectors.Count - 1; }
+                    Action = () => { currentProjector = projector; }
                 });
             }
             public void Add(ManagedDisplay surface)
@@ -109,7 +109,7 @@ namespace IngameScript
                 if (projectorIndex < 0 || projectorIndex > projectors.Count - 1)
                     return;
                 CurrentProjector = projectors[projectorIndex];
-                currentProjectorIndex = projectorIndex;
+                SelectedLine = projectorIndex;
                 UpdateDisplays();
             }
             public void Up()

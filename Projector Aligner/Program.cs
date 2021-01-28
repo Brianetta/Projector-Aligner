@@ -20,7 +20,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        string Version = "Version 1.0.0";
+        string Version = "Version 1.0.1";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
         Dictionary<string, ProjectorController> ProjectorControllers = new Dictionary<string, ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();

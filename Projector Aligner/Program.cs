@@ -20,9 +20,9 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        string Version = "Version 1.0.2";
+        string Version = "Version 1.0.3";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
-        Dictionary<string, ProjectorController> ProjectorControllers = new Dictionary<string, ProjectorController>();
+        List<ProjectorController> ProjectorControllers = new List<ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
         MyIni ini = new MyIni();
         string iniSection = "projector";
@@ -93,25 +93,15 @@ namespace IngameScript
                     if (MyIni.HasSection(controller.CustomData, iniSection) && ini.TryParse(controller.CustomData))
                     {
                         groupName = ini.Get(iniSection, "group").ToString("default");
-                        if (!ProjectorControllers.Keys.Contains(groupName))
-                        {
-                            ProjectorControllers.Add(groupName, new ProjectorController(controller, this));
-                        }
+                        ProjectorController projectorController = new ProjectorController(controller, this);
+                        if (!ProjectorGroups.Keys.Contains(groupName))
+                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
+                        projectorController.projectorGroup = ProjectorGroups[groupName];
+                        ProjectorControllers.Add(projectorController);                        
                     }
                 }
                 return false; 
             });
-            foreach (var name in ProjectorControllers.Keys)
-            {
-                if (ProjectorGroups.ContainsKey(name))
-                {
-                    ProjectorControllers[name].projectorGroup = ProjectorGroups[name];
-                }
-                else
-                {
-                    ProjectorGroups.Remove(name);
-                }
-            }
         }
 
         public Program()
@@ -123,7 +113,7 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
-            foreach (var projectorController in ProjectorControllers.Values)
+            foreach (var projectorController in ProjectorControllers)
                 projectorController.UpdateKeys();
             if (commandLine.TryParse(argument))
             {

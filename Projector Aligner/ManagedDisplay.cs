@@ -172,6 +172,32 @@ namespace IngameScript
                 Position += new Vector2(0, LineHeight);
                 float ColumnWidth = viewport.Width / 4;
 
+                if (null == projector)
+                {
+                    frame.Add(new MySprite()
+                    {
+                        Type = SpriteType.TEXT,
+                        Data = "Group: " + group + "  Projector: NOT CONFIGURED!",
+                        Position = Position,
+                        RotationOrScale = RegularFontSize / 2,
+                        Color = Color.Gray,
+                        Alignment = TextAlignment.CENTER,
+                        FontId = "White"
+                    });
+                    Position += new Vector2(0, LineHeight * 3);
+                    frame.Add(new MySprite()
+                    {
+                        Type = SpriteType.TEXTURE,
+                        Data = "Danger",
+                        Position = Position,
+                        Size = new Vector2(LineHeight * 3, LineHeight * 3),
+                        Color = Color.Red,
+                    })
+                    ;
+                    frame.Dispose();
+                    return;
+                }
+
                 frame.Add(new MySprite()
                 {
                     Type = SpriteType.TEXT,

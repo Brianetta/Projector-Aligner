@@ -80,6 +80,8 @@ namespace IngameScript
                 if (keys == 0)
                     return;
                 var projector = projectorGroup.CurrentProjector;
+                if (null == projector)
+                    return;
                 if ((keys & Key_Right) == Key_Right)
                 {
                     projector.ProjectionRotation = new Vector3I(projector.ProjectionRotation.X >= 3 ? 0 : projector.ProjectionRotation.X + 1, projector.ProjectionRotation.Y, projector.ProjectionRotation.Z);

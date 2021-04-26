@@ -116,12 +116,16 @@ namespace IngameScript
             {
                 if (SelectedLine > 0)
                     --SelectedLine;
+                if (DisplayStatus)
+                    Select();
                 UpdateDisplays();
             }
             public void Down()
             {
                 if (SelectedLine < projectors.Count - 1)
                     ++SelectedLine;
+                if (DisplayStatus)
+                    Select();
                 UpdateDisplays();
             }
             public void UpdateDisplays()

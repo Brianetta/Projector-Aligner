@@ -20,7 +20,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        string Version = "Version 1.0.3";
+        string Version = "Version 1.0.4";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
         List<ProjectorController> ProjectorControllers = new List<ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
@@ -121,11 +121,11 @@ namespace IngameScript
                 switch (commandLine.Argument(0))
                 {
                     case "up":                        
-                        if (ProjectorGroups.Keys.Contains(groupName) && !ProjectorGroups[groupName].DisplayStatus)
+                        if (ProjectorGroups.Keys.Contains(groupName))
                             ProjectorGroups[groupName].Up();
                         break;
                     case "down":
-                        if (ProjectorGroups.Keys.Contains(groupName) && !ProjectorGroups[groupName].DisplayStatus)
+                        if (ProjectorGroups.Keys.Contains(groupName))
                             ProjectorGroups[groupName].Down();
                         break;
                     case "apply":

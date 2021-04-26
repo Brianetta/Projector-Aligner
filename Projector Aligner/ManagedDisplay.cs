@@ -62,7 +62,7 @@ namespace IngameScript
 
             private void AddHeading(int menuLength)
             {
-                Position = new Vector2(viewport.Width / 2f - LineHeight, StartHeight) + viewport.Position;
+                Position = new Vector2(viewport.Width / 2f, StartHeight) + viewport.Position;
                 frame.Add(new MySprite()
                 {
                     Type = SpriteType.TEXT,
@@ -93,7 +93,7 @@ namespace IngameScript
                     Size = new Vector2(LineHeight, LineHeight),
                     Position = Position,
                 });
-                Position = new Vector2(viewport.Width / 2f - LineHeight, StartHeight + HeadingHeight) + viewport.Position;
+                Position = new Vector2(viewport.Width / 2f, StartHeight + HeadingHeight) + viewport.Position;
                 frame.Add(new MySprite()
                 {
                     Type = SpriteType.TEXT,

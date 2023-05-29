@@ -55,7 +55,7 @@ namespace IngameScript
                         groupName = ini.Get(iniSection, "group").ToString("default");
                         if (!ProjectorGroups.Keys.Contains(groupName))
                         {
-                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
+                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         }
                         ProjectorGroups[groupName].Add(projector);
                     }
@@ -68,7 +68,7 @@ namespace IngameScript
                         groupName = ini.Get(iniSection, "group").ToString("default");
                         if (!ProjectorGroups.Keys.Contains(groupName))
                         {
-                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
+                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         }
                         int surfacenumber = ini.Get(iniSection, "display").ToInt16(-1);
                         float scale = ini.Get(iniSection, "scale").ToSingle(1.0f);
@@ -95,7 +95,7 @@ namespace IngameScript
                         groupName = ini.Get(iniSection, "group").ToString("default");
                         ProjectorController projectorController = new ProjectorController(controller, this);
                         if (!ProjectorGroups.Keys.Contains(groupName))
-                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName));
+                            ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         projectorController.projectorGroup = ProjectorGroups[groupName];
                         ProjectorControllers.Add(projectorController);                        
                     }
@@ -134,9 +134,20 @@ namespace IngameScript
                         {
                             ProjectorGroup group = ProjectorGroups[groupName];
                             if (!group.DisplayStatus)
+                            {
                                 group.Select();
+                                group.UpdateDisplays();
+                            }
                             group.DisplayStatus = !group.DisplayStatus;
                         }
+                        break;
+                    case "load":
+                        if (ProjectorGroups.Keys.Contains(groupName))
+                            ProjectorGroups[groupName].LoadAlignment();
+                        break;
+                    case "save":
+                        if (ProjectorGroups.Keys.Contains(groupName))
+                            ProjectorGroups[groupName].SaveAlignment();
                         break;
                     case "build":
                     case "rebuild":

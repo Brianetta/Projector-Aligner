@@ -1,6 +1,8 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.Game.Screens.Helpers.RadialMenuActions;
+using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
+using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 
 namespace IngameScript
@@ -9,10 +11,13 @@ namespace IngameScript
     {
         class ProjectorGroup
         {
+            private Program program;
             private List<IMyProjector> projectors = new List<IMyProjector>();
             private List<ManagedDisplay> displays = new List<ManagedDisplay>();
             private List<MenuItem> ProjectorMenu = new List<MenuItem>();
             private int SelectedLine = 0;
+            private int SelectedProjector = 0;
+            private int UILines = 3; // Number of additional menu lines
             public bool DisplayStatus
             {
                 get
@@ -33,9 +38,10 @@ namespace IngameScript
             private IMyProjector currentProjector;
             private bool displayStatus;
 
-            public ProjectorGroup(string customName)
+            public ProjectorGroup(string customName,Program program)
             {
                 this.CustomName = customName;
+                this.program = program;
                 DisplayStatus = true;
             }
 
@@ -104,13 +110,35 @@ namespace IngameScript
             {
                 this.Select(SelectedLine);
             }
-            public void Select(int projectorIndex)
-            {
-                if (projectorIndex < 0 || projectorIndex > projectors.Count - 1)
+            public void Select(int menuIndex)
+            {                
+                if (menuIndex < 0 || menuIndex > projectors.Count + UILines - 1)
                     return;
-                CurrentProjector = projectors[projectorIndex];
-                SelectedLine = projectorIndex;
-                UpdateDisplays();
+                if (menuIndex > projectors.Count - 1)
+                {
+                    switch (menuIndex - projectors.Count)
+                    {
+                        case 0:
+                            SaveAlignment();
+                            SelectedLine = SelectedProjector;
+                            break;
+                        case 1:
+                            LoadAlignment();
+                            SelectedLine = SelectedProjector;
+                            break;
+                        case 2:
+                        default:
+                            TogglePower();
+                            SelectedLine = SelectedProjector;
+                            break;
+                    }
+                }
+                else
+                {
+                    SelectedProjector = SelectedLine;
+                    CurrentProjector = projectors[SelectedProjector];
+                    SelectedLine = menuIndex;
+                }
             }
             public void Up()
             {
@@ -122,10 +150,18 @@ namespace IngameScript
             }
             public void Down()
             {
-                if (SelectedLine < projectors.Count - 1)
-                    ++SelectedLine;
+                ++SelectedLine;
                 if (DisplayStatus)
+                {
+                    if (SelectedLine >= projectors.Count)
+                        --SelectedLine;
                     Select();
+                }
+                else
+                {
+                    if (SelectedLine >= projectors.Count + UILines)
+                        --SelectedLine;
+                }
                 UpdateDisplays();
             }
             public void UpdateDisplays()
@@ -137,6 +173,42 @@ namespace IngameScript
                     else
                         display.RenderMenu(SelectedLine, ProjectorMenu);
                 }
+            }
+
+            internal void LoadAlignment()
+            {
+                var ini = program.ini;
+                var iniSection = program.iniSection;
+                ini.TryParse(CurrentProjector.CustomData);
+                Vector3I ProjectionRotation = new Vector3I(
+                    ini.Get(iniSection, "RotationX").ToInt32(),
+                    ini.Get(iniSection, "RotationY").ToInt32(),
+                    ini.Get(iniSection, "RotationZ").ToInt32()
+                );
+                Vector3I ProjectionOffset = new Vector3I(
+                    ini.Get(iniSection, "OffsetX").ToInt32(),
+                    ini.Get(iniSection, "OffsetY").ToInt32(),
+                    ini.Get(iniSection, "OffsetZ").ToInt32()
+                );
+                CurrentProjector.ProjectionRotation = ProjectionRotation;
+                CurrentProjector.ProjectionOffset = ProjectionOffset;
+            }
+
+            internal void SaveAlignment()
+            {
+                MyIni ini = program.ini;
+                ini.TryParse(CurrentProjector.CustomData);
+                ini.Set(program.iniSection, "RotationX", CurrentProjector.ProjectionRotation.X);
+                ini.Set(program.iniSection, "RotationY", CurrentProjector.ProjectionRotation.Y);
+                ini.Set(program.iniSection, "RotationZ", CurrentProjector.ProjectionRotation.Z);
+                ini.Set(program.iniSection, "OffsetX", CurrentProjector.ProjectionOffset.X);
+                ini.Set(program.iniSection, "OffsetY", CurrentProjector.ProjectionOffset.Y);
+                ini.Set(program.iniSection, "OffsetZ", CurrentProjector.ProjectionOffset.Z);
+                CurrentProjector.CustomData = ini.ToString();
+            }
+            internal void TogglePower()
+            {
+                CurrentProjector.Enabled = !CurrentProjector.Enabled;
             }
         }
     }

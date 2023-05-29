@@ -159,6 +159,9 @@ namespace IngameScript
                         AddMenuItem(menuItem);
                     ++renderLineCount;
                 }
+                AddMenuItem("Save alignment", "LCD_Emote_Happy", 0,Color.Yellow);
+                AddMenuItem("Restore alignment", "LCD_Emote_Neutral", 0,Color.Green);
+                AddMenuItem("Toggle projector power", "LCD_Emote_Dead", 0,Color.Red);
                 frame.Dispose();
             }
 

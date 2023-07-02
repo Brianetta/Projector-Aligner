@@ -178,7 +178,7 @@ namespace IngameScript
             internal void LoadAlignment()
             {
                 var ini = program.ini;
-                var iniSection = program.iniSection;
+                var iniSection = Program.iniSection;
                 ini.TryParse(CurrentProjector.CustomData);
                 Vector3I ProjectionRotation = new Vector3I(
                     ini.Get(iniSection, "RotationX").ToInt32(),
@@ -198,12 +198,12 @@ namespace IngameScript
             {
                 MyIni ini = program.ini;
                 ini.TryParse(CurrentProjector.CustomData);
-                ini.Set(program.iniSection, "RotationX", CurrentProjector.ProjectionRotation.X);
-                ini.Set(program.iniSection, "RotationY", CurrentProjector.ProjectionRotation.Y);
-                ini.Set(program.iniSection, "RotationZ", CurrentProjector.ProjectionRotation.Z);
-                ini.Set(program.iniSection, "OffsetX", CurrentProjector.ProjectionOffset.X);
-                ini.Set(program.iniSection, "OffsetY", CurrentProjector.ProjectionOffset.Y);
-                ini.Set(program.iniSection, "OffsetZ", CurrentProjector.ProjectionOffset.Z);
+                ini.Set(Program.iniSection, "RotationX", CurrentProjector.ProjectionRotation.X);
+                ini.Set(Program.iniSection, "RotationY", CurrentProjector.ProjectionRotation.Y);
+                ini.Set(Program.iniSection, "RotationZ", CurrentProjector.ProjectionRotation.Z);
+                ini.Set(Program.iniSection, "OffsetX", CurrentProjector.ProjectionOffset.X);
+                ini.Set(Program.iniSection, "OffsetY", CurrentProjector.ProjectionOffset.Y);
+                ini.Set(Program.iniSection, "OffsetZ", CurrentProjector.ProjectionOffset.Z);
                 CurrentProjector.CustomData = ini.ToString();
             }
             internal void TogglePower()

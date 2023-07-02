@@ -20,13 +20,16 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        string Version = "Version 1.1.0";
+        string Version = "Version 1.2.0";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
         List<ProjectorController> ProjectorControllers = new List<ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
         MyIni ini = new MyIni();
-        string iniSection = "projector";
+        static string iniSection = "projector";
+        static string DisplaySectionPrefix = iniSection + "_display";
         MyCommandLine commandLine = new MyCommandLine();
+        private List<string> SectionNames = new List<string>();
+        StringBuilder SectionCandidateName = new StringBuilder();
 
         struct MenuItem
         {
@@ -40,6 +43,7 @@ namespace IngameScript
 
         public void Build()
         {
+            StringComparison ignoreCase = StringComparison.InvariantCultureIgnoreCase;
             IMyProjector projector = null;
             IMyShipController controller = null;
             IMyTextSurfaceProvider provider = null;
@@ -47,61 +51,81 @@ namespace IngameScript
             ProjectorControllers.Clear();
             ProjectorGroups.Clear();
             GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(Blocks, block => {
-                projector = block as IMyProjector;
-                if (null != projector)
+                if (!block.IsSameConstructAs(Me))
+                    return false;
+                ini.TryParse(block.CustomData);
+                ini.GetSections(SectionNames);
+                foreach (var section in SectionNames)
                 {
-                    if (MyIni.HasSection(projector.CustomData, iniSection) && ini.TryParse(projector.CustomData))
+                    Echo(String.Format("Block: {0}",block.CustomName));
+                    groupName = ini.Get(section, "group").ToString("default");
+                    projector = block as IMyProjector;
+                    if (null != projector && section.Equals(iniSection))
                     {
-                        groupName = ini.Get(iniSection, "group").ToString("default");
-                        if (!ProjectorGroups.Keys.Contains(groupName))
+                        Echo(String.Format("Projector: {0}",groupName));
+                        if (!ProjectorGroups.ContainsKey(groupName))
                         {
                             ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         }
                         ProjectorGroups[groupName].Add(projector);
                     }
-                }
-                provider = block as IMyTextSurfaceProvider;
-                if (null != provider)
-                {
-                    if (MyIni.HasSection(block.CustomData, iniSection) && ini.TryParse(block.CustomData))
+                    provider = block as IMyTextSurfaceProvider;
+                    if (null != provider && (section.Equals(iniSection) || section.StartsWith(DisplaySectionPrefix)))
                     {
-                        groupName = ini.Get(iniSection, "group").ToString("default");
-                        if (!ProjectorGroups.Keys.Contains(groupName))
+                        Echo(String.Format("Provider: {0}", groupName));
+                        if (!ProjectorGroups.ContainsKey(groupName))
                         {
                             ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         }
-                        int surfacenumber = ini.Get(iniSection, "display").ToInt16(-1);
-                        float scale = ini.Get(iniSection, "scale").ToSingle(1.0f);
-                        if (surfacenumber >= 0 && provider.SurfaceCount > 0)
+                        int surfacenumber = -1;
+                        for (int displayNumber = 0; displayNumber < provider.SurfaceCount; ++displayNumber)
                         {
-                            string DefaultColor = "00CED1";
-                            string ColorStr = ini.Get(iniSection, "color").ToString(DefaultColor);
-                            if (ColorStr.Length < 6) 
-                                ColorStr = DefaultColor;
-                            string R = ColorStr.Substring(0, 2);
-                            string G = ColorStr.Substring(2, 2);
-                            string B = ColorStr.Substring(4, 2);
-                            Color color = new Color() { R = byte.Parse(R, System.Globalization.NumberStyles.HexNumber), G = byte.Parse(G, System.Globalization.NumberStyles.HexNumber), B = byte.Parse(B, System.Globalization.NumberStyles.HexNumber), A = 255 };
-                            ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber),scale, color));
-                            
+                            SectionCandidateName.Clear();
+                            SectionCandidateName.Append(DisplaySectionPrefix).Append(displayNumber.ToString());
+                            if (section.Equals(SectionCandidateName.ToString(), ignoreCase))
+                            {
+                                surfacenumber = displayNumber;
+                                Echo(String.Format("Display: {0}", surfacenumber));
+                                addDisplay(provider, groupName, surfacenumber, section);
+                            }
+                        }
+                        if (section == iniSection)
+                        {
+                            surfacenumber = ini.Get(section, "display").ToInt16(-1);
+                            Echo(String.Format("Display: {0}", surfacenumber));
+                            addDisplay(provider, groupName, surfacenumber, section);
                         }
                     }
-                }
-                controller = block as IMyShipController;
-                if (null != controller)
-                {
-                    if (MyIni.HasSection(controller.CustomData, iniSection) && ini.TryParse(controller.CustomData))
-                    {
-                        groupName = ini.Get(iniSection, "group").ToString("default");
+                    controller = block as IMyShipController;
+                    if (null != controller && section.Equals(iniSection))
+                        {
+                        Echo(String.Format("Controller: {0}",groupName));
                         ProjectorController projectorController = new ProjectorController(controller, this);
-                        if (!ProjectorGroups.Keys.Contains(groupName))
+                        if (!ProjectorGroups.ContainsKey(groupName))
                             ProjectorGroups.Add(groupName, new ProjectorGroup(groupName, this));
                         projectorController.projectorGroup = ProjectorGroups[groupName];
-                        ProjectorControllers.Add(projectorController);                        
+                        ProjectorControllers.Add(projectorController);                      
                     }
                 }
-                return false; 
+                return false;
             });
+        }
+
+        private void addDisplay(IMyTextSurfaceProvider provider, string groupName, int surfacenumber, string section)
+        {                     
+            if (surfacenumber >= 0 && provider.SurfaceCount > 0)
+            {
+                string DefaultColor = "00CED1";
+                float scale = ini.Get(section, "scale").ToSingle(1.0f);
+                string ColorStr = ini.Get(section, "color").ToString(DefaultColor);
+                if (ColorStr.Length < 6)
+                    ColorStr = DefaultColor;
+                string R = ColorStr.Substring(0, 2);
+                string G = ColorStr.Substring(2, 2);
+                string B = ColorStr.Substring(4, 2);
+                Color color = new Color() { R = byte.Parse(R, System.Globalization.NumberStyles.HexNumber), G = byte.Parse(G, System.Globalization.NumberStyles.HexNumber), B = byte.Parse(B, System.Globalization.NumberStyles.HexNumber), A = 255 };
+                ProjectorGroups[groupName].Add(new ManagedDisplay(provider.GetSurface(surfacenumber), scale, color));
+            }
         }
 
         public Program()
@@ -121,16 +145,16 @@ namespace IngameScript
                 switch (commandLine.Argument(0))
                 {
                     case "up":                        
-                        if (ProjectorGroups.Keys.Contains(groupName))
+                        if (ProjectorGroups.ContainsKey(groupName))
                             ProjectorGroups[groupName].Up();
                         break;
                     case "down":
-                        if (ProjectorGroups.Keys.Contains(groupName))
+                        if (ProjectorGroups.ContainsKey(groupName))
                             ProjectorGroups[groupName].Down();
                         break;
                     case "apply":
                     case "select":
-                        if (ProjectorGroups.Keys.Contains(groupName))
+                        if (ProjectorGroups.ContainsKey(groupName))
                         {
                             ProjectorGroup group = ProjectorGroups[groupName];
                             if (!group.DisplayStatus)
@@ -142,11 +166,11 @@ namespace IngameScript
                         }
                         break;
                     case "load":
-                        if (ProjectorGroups.Keys.Contains(groupName))
+                        if (ProjectorGroups.ContainsKey(groupName))
                             ProjectorGroups[groupName].LoadAlignment();
                         break;
                     case "save":
-                        if (ProjectorGroups.Keys.Contains(groupName))
+                        if (ProjectorGroups.ContainsKey(groupName))
                             ProjectorGroups[groupName].SaveAlignment();
                         break;
                     case "build":

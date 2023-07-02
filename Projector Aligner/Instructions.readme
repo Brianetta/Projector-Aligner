@@ -25,6 +25,16 @@ Change the number to the screen that you wish to use; numbers start at 0, so a
 five-screen cockpit has screens 0, 1, 2, 3 and 4.
 Color should be entered as six hexadecimal digits representing red, green and blue.
 
+Additionally, you can specify details for a specific display using
+numbered headings. This allows you to configure the display for more
+than one group on a multi-display block, such as a cockpit, or to
+display the output on a cockpit without using it for control. For example:
+
+[projector_display0]
+scale=0.8
+color=F07020
+group=Second Printer
+
 Arguments
 ---------
 
@@ -34,6 +44,8 @@ apply          Enter Menu / Select current projector from Menu
 select           "
 build          Re-read the Custom Data of blocks, and reconfigure
 rebuild          "
+save           Store the current alignment values in Custom Data
+load           Recover the alignment values from Custom Data
 
 Follow the argument with a group name if other than "default". Use quotes if the
 group name contains spaces or begins with a hyphen.

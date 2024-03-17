@@ -192,6 +192,7 @@ namespace IngameScript
                 );
                 CurrentProjector.ProjectionRotation = ProjectionRotation;
                 CurrentProjector.ProjectionOffset = ProjectionOffset;
+                CurrentProjector.UpdateOffsetAndRotation();
             }
 
             internal void SaveAlignment()

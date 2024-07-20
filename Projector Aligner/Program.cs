@@ -20,7 +20,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        string Version = "Version 1.2.1";
+        string Version = "Version 1.2.2";
         List<IMyTerminalBlock>Blocks = new List<IMyTerminalBlock>();
         List<ProjectorController> ProjectorControllers = new List<ProjectorController>();
         Dictionary<string, ProjectorGroup> ProjectorGroups = new Dictionary<string, ProjectorGroup>();
@@ -113,7 +113,7 @@ namespace IngameScript
 
         private void addDisplay(IMyTextSurfaceProvider provider, string groupName, int surfacenumber, string section)
         {                     
-            if (surfacenumber >= 0 && provider.SurfaceCount > 0)
+            if (surfacenumber >= 0 && provider.SurfaceCount > surfacenumber)
             {
                 string DefaultColor = "00CED1";
                 float scale = ini.Get(section, "scale").ToSingle(1.0f);
